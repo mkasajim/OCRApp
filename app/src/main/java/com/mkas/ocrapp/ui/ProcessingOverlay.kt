@@ -7,7 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+// import androidx.compose.ui.graphics.Color // No longer directly used for hardcoded values
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -18,6 +18,16 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.mkas.ocrapp.R
 
+/**
+ * A composable that displays a semi-transparent overlay with a progress indicator
+ * and messages, typically used during long-running operations like image processing.
+ *
+ * The overlay is implemented as a [Dialog] to ensure it appears above other UI elements
+ * and blocks interaction with the underlying screen.
+ *
+ * @param isVisible Controls the visibility of the overlay. If true, the dialog is shown.
+ * @param modifier [Modifier] to be applied to the root [Box] of the dialog content.
+ */
 @Composable
 fun ProcessingOverlay(
     isVisible: Boolean,
@@ -34,7 +44,7 @@ fun ProcessingOverlay(
             Box(
                 modifier = modifier
                     .fillMaxSize()
-                    .background(Color(0x80000000)), // Semi-transparent background
+                    .background(MaterialTheme.colorScheme.scrim), // Semi-transparent background
                 contentAlignment = Alignment.Center
             ) {
                 Card(
@@ -43,7 +53,7 @@ fun ProcessingOverlay(
                         .padding(32.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.surface // Updated
                     ),
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 8.dp
@@ -57,7 +67,7 @@ fun ProcessingOverlay(
                         // Progress Indicator
                         CircularProgressIndicator(
                             modifier = Modifier.size(48.dp),
-                            color = Color(0xFF2196F3),
+                            color = MaterialTheme.colorScheme.primary, // Updated
                             strokeWidth = 4.dp
                         )
                         
@@ -68,7 +78,7 @@ fun ProcessingOverlay(
                             text = stringResource(R.string.processing_image),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF333333),
+                            color = MaterialTheme.colorScheme.onSurface, // Updated
                             textAlign = TextAlign.Center
                         )
                         
@@ -78,7 +88,7 @@ fun ProcessingOverlay(
                         Text(
                             text = stringResource(R.string.please_wait),
                             fontSize = 14.sp,
-                            color = Color(0xFF666666),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant, // Updated
                             textAlign = TextAlign.Center
                         )
                     }
@@ -95,7 +105,7 @@ fun ProcessingOverlayPreview() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.LightGray)
+                .background(MaterialTheme.colorScheme.surfaceVariant) // Example background for preview
         ) {
             ProcessingOverlay(isVisible = true)
         }

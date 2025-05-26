@@ -6,7 +6,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -15,6 +14,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mkas.ocrapp.R
 
+/**
+ * Composable function for the Home screen of the OCR application.
+ *
+ * This screen displays the app title, a button to select an image for OCR,
+ * and a subtitle guiding the user.
+ *
+ * @param onSelectImageClick Callback invoked when the "Select Image" button is clicked.
+ * @param modifier [Modifier] to be applied to the layout.
+ */
 @Composable
 fun HomeScreen(
     onSelectImageClick: () -> Unit,
@@ -32,7 +40,7 @@ fun HomeScreen(
             text = stringResource(R.string.app_name),
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF2196F3),
+            color = MaterialTheme.colorScheme.primary, // Updated
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 48.dp)
         )
@@ -45,8 +53,8 @@ fun HomeScreen(
                 .height(56.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2196F3),
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.primary, // Updated
+                contentColor = MaterialTheme.colorScheme.onPrimary // Updated
             )
         ) {
             Text(
@@ -60,40 +68,17 @@ fun HomeScreen(
         Text(
             text = stringResource(R.string.choose_image_subtitle),
             fontSize = 14.sp,
-            color = Color(0xFF666666),
+            color = MaterialTheme.colorScheme.onSurfaceVariant, // Updated
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 12.dp)
         )
         
-        Spacer(modifier = Modifier.height(64.dp))
-        
-        // Recent Scans Section (Optional - placeholder for now)
-        RecentScansSection()
+        // Spacer(modifier = Modifier.height(64.dp)) // Spacer can be kept or adjusted as needed for layout
+        // RecentScansSection has been removed
     }
 }
 
-@Composable
-private fun RecentScansSection() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(R.string.recent_scans),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color(0xFF333333),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        
-        // Placeholder for recent scans - can be implemented later
-        Text(
-            text = "No recent scans",
-            fontSize = 14.sp,
-            color = Color(0xFF999999),
-            textAlign = TextAlign.Center
-        )
-    }
-}
+// RecentScansSection composable removed
 
 @Preview(showBackground = true)
 @Composable

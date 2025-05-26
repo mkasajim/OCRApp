@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.vision.common)
     implementation(libs.play.services.mlkit.text.recognition.common)
     implementation(libs.play.services.mlkit.text.recognition)
+    implementation(libs.androidx.lifecycle.viewmodel.compose) // Added ViewModel Compose
+    implementation(libs.androidx.lifecycle.runtime.compose) // Added Lifecycle Runtime Compose
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

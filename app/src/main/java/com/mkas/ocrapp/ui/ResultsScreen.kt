@@ -13,7 +13,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +24,20 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.mkas.ocrapp.R
 
+/**
+ * Composable function for the Results screen.
+ *
+ * This screen displays the selected image (if available) and the extracted text.
+ * It provides options to switch between image and text views via tabs (if image is present),
+ * copy the extracted text, select a new image, or go back.
+ *
+ * @param extractedText The text extracted from the image.
+ * @param imageUri The [Uri] of the selected image. Can be null if no image was processed or if processing failed.
+ * @param onBackClick Callback invoked when the back navigation action is triggered.
+ * @param onCopyTextClick Callback invoked when the "Copy Text" button is clicked.
+ * @param onSelectNewImageClick Callback invoked when the "Select New Image" or "Try Another Image" button is clicked.
+ * @param modifier [Modifier] to be applied to the layout.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResultsScreen(
@@ -59,9 +72,9 @@ fun ResultsScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF2196F3),
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 windowInsets = TopAppBarDefaults.windowInsets.only(WindowInsetsSides.Horizontal)
             )
@@ -84,8 +97,8 @@ fun ResultsScreen(
                 TabRow(
                     selectedTabIndex = selectedTabIndex,
                     modifier = Modifier.fillMaxWidth(),
-                    containerColor = Color.White,
-                    contentColor = Color(0xFF2196F3)
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.primary
                 ) {
                     tabs.forEachIndexed { index, title ->
                         Tab(
@@ -123,7 +136,7 @@ fun ResultsScreen(
                                 text = stringResource(R.string.no_text_detected),
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color(0xFF666666),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant, // Updated
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(bottom = 16.dp)
                             )
@@ -131,8 +144,8 @@ fun ResultsScreen(
                                 onClick = onSelectNewImageClick,
                                 shape = RoundedCornerShape(8.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF2196F3),
-                                    contentColor = Color.White
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary
                                 )
                             ) {
                                 Text(
@@ -176,22 +189,28 @@ fun ResultsScreen(
     }
 }
 
+/**
+ * Displays the selected image within a Card.
+ *
+ * @param imageUri The [Uri] of the image to display.
+ * @param modifier [Modifier] to be applied to the Card.
+ */
 @Composable
 private fun ImageDisplayCard(
     imageUri: Uri,
-    modifier: Modifier = Modifier // This modifier comes from ResultsScreen, e.g., .fillMaxSize().padding(16.dp)
+    modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier // Apply the passed modifier (size and outer padding) to the Card
             // .fillMaxWidth() // This is redundant if 'modifier' already contains .fillMaxSize()
             .border( // This foundation border is applied over the Card's area
                 width = 1.dp,
-                color = Color(0xFFE0E0E0),
+                color = MaterialTheme.colorScheme.outline, // Updated
                 shape = RoundedCornerShape(8.dp)
             ),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface // Updated
         )
         // For M3 Card, you could also use the `border = BorderStroke(...)` parameter instead of `Modifier.border`
     ) {
@@ -206,22 +225,28 @@ private fun ImageDisplayCard(
     }
 }
 
+/**
+ * Displays the extracted text within a Card, with vertical scrolling.
+ *
+ * @param extractedText The text to display.
+ * @param modifier [Modifier] to be applied to the Card.
+ */
 @Composable
 private fun TextDisplayCard(
     extractedText: String,
-    modifier: Modifier = Modifier // This modifier comes from ResultsScreen, e.g., .fillMaxSize().padding(16.dp)
+    modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier // Apply the passed modifier (size and outer padding) to the Card
             // .fillMaxWidth() // This is redundant if 'modifier' already contains .fillMaxSize()
             .border( // This foundation border is applied over the Card's area
                 width = 1.dp,
-                color = Color(0xFFE0E0E0),
+                color = MaterialTheme.colorScheme.outline, // Updated
                 shape = RoundedCornerShape(8.dp)
             ),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface // Updated
         )
         // For M3 Card, you could also use the `border = BorderStroke(...)` parameter instead of `Modifier.border`
     ) {
@@ -232,18 +257,22 @@ private fun TextDisplayCard(
                 .padding(16.dp) // Padding for the text content within the Card
                 .verticalScroll(rememberScrollState()),
             fontSize = 16.sp,
-            color = Color(0xFF333333),
+            color = MaterialTheme.colorScheme.onSurface, // Updated
             lineHeight = 24.sp
         )
     }
 }
 
+/**
+ * Displays a bottom toolbar with buttons for "Copy Text" and "Select New Image".
+ *
+ * @param onCopyTextClick Callback for the "Copy Text" button.
+ * @param onSelectNewImageClick Callback for the "Select New Image" button.
+ */
 @Composable
 private fun BottomToolbar(
     onCopyTextClick: () -> Unit,
     onSelectNewImageClick: () -> Unit
-    // No modifier needed here if it's just for Scaffold's bottomBar,
-    // but can be added if more customization is required.
 ) {
     Row(
         modifier = Modifier
@@ -257,8 +286,8 @@ private fun BottomToolbar(
             modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2196F3),
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
             Text(
@@ -274,9 +303,9 @@ private fun BottomToolbar(
             modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = Color(0xFF2196F3)
+                contentColor = MaterialTheme.colorScheme.primary // Updated
             )
-            // border = BorderStroke(1.dp, Color(0xFF2196F3)) // Default outlined button border is usually sufficient
+            // border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary) // Default outlined button border is usually sufficient
         ) {
             Text(
                 text = stringResource(R.string.select_new_image),

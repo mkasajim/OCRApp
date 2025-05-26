@@ -1,11 +1,8 @@
 package com.mkas.ocrapp
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -15,25 +12,34 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.mkas.ocrapp.ui.HomeScreen
 import com.mkas.ocrapp.ui.ProcessingOverlay
 import com.mkas.ocrapp.ui.ResultsScreen
 import com.mkas.ocrapp.ui.theme.OCRAppTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mkas.ocrapp.R // Added for string resources
+import android.widget.Toast // Explicitly ensure Toast is imported
 
+/**
+ * Enum representing the different screens in the application.
+ */
 enum class Screen {
+    /** The initial screen where users can select an image. */
     HOME,
+    /** The screen that displays the OCR results (image and extracted text). */
     RESULTS
 }
 
+/**
+ * The main activity of the OCR application.
+ * Sets up the edge-to-edge display and hosts the main [OCRApp] composable.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,46 +52,30 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * The main composable function for the OCR application.
+ *
+ * This function sets up the overall app structure, including screen navigation,
+ * state management via [MainViewModel], and the UI for different screens.
+ *
+ * @param mainViewModel The [MainViewModel] instance used for managing UI state and business logic.
+ *                      Defaults to a ViewModel provided by [viewModel].
+ */
 @Composable
-fun OCRApp() {
-    var currentScreen by remember { mutableStateOf(Screen.HOME) }
-    var extractedText by remember { mutableStateOf("") }
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var isProcessing by remember { mutableStateOf(false) }
+fun OCRApp(mainViewModel: MainViewModel = viewModel()) {
+    val currentScreen by mainViewModel.currentScreen.collectAsStateWithLifecycle()
+    val extractedText by mainViewModel.extractedText.collectAsStateWithLifecycle()
+    val selectedImageUri by mainViewModel.selectedImageUri.collectAsStateWithLifecycle()
+    val isProcessing by mainViewModel.isProcessing.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     val pickMediaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri: Uri? ->
             if (uri != null) {
-                isProcessing = true
-                selectedImageUri = uri // Store the URI
-                try {
-                    val image = InputImage.fromFilePath(context, uri)
-                    val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-
-                    recognizer.process(image)
-                        .addOnSuccessListener { visionText ->
-                            extractedText = visionText.text
-                            isProcessing = false
-                            currentScreen = Screen.RESULTS
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(context, "Text recognition failed: ${e.message}", Toast.LENGTH_LONG).show()
-                            extractedText = ""
-                            isProcessing = false
-                            selectedImageUri = null // Reset URI on failure
-                            currentScreen = Screen.HOME
-                        }
-                } catch (e: Exception) {
-                    Toast.makeText(context, "Error preparing image: ${e.message}", Toast.LENGTH_LONG).show()
-                    extractedText = ""
-                    isProcessing = false
-                    selectedImageUri = null // Reset URI on error
-                    currentScreen = Screen.HOME
-                }
+                mainViewModel.processImage(context, uri)
             } else {
-                Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.no_image_selected), Toast.LENGTH_SHORT).show()
             }
         }
     )
@@ -103,19 +93,15 @@ fun OCRApp() {
                 Screen.RESULTS -> {
                     ResultsScreen(
                         extractedText = extractedText,
-                        imageUri = selectedImageUri, // Pass the URI
+                        imageUri = selectedImageUri,
                         onBackClick = {
-                            currentScreen = Screen.HOME
-                            extractedText = ""
-                            selectedImageUri = null
+                            mainViewModel.clearTextAndState()
                         },
                         onCopyTextClick = {
-                            copyTextToClipboard(context, extractedText)
+                            mainViewModel.copyToClipboard(context, extractedText)
                         },
                         onSelectNewImageClick = {
-                            currentScreen = Screen.HOME
-                            extractedText = ""
-                            selectedImageUri = null
+                            mainViewModel.clearTextAndState()
                         }
                     )
                 }
@@ -127,17 +113,13 @@ fun OCRApp() {
     }
 }
 
-private fun copyTextToClipboard(context: Context, text: String) {
-    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText("Extracted Text", text)
-    clipboard.setPrimaryClip(clip)
-    Toast.makeText(context, context.getString(R.string.text_copied), Toast.LENGTH_SHORT).show()
-}
+// Removed copyTextToClipboard function as it's now in MainViewModel
 
 @Preview(showBackground = true)
 @Composable
 fun OCRAppPreview() {
     OCRAppTheme {
-        OCRApp()
+        OCRApp() // This preview will use a default MainViewModel instance
     }
 }
+// Removed copyTextToClipboard function as it's now in MainViewModel

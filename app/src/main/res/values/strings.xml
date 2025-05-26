@@ -24,4 +24,12 @@
     <!-- Tabs -->
     <string name="tab_image">Image</string>
     <string name="tab_text">Text</string>
+
+    <!-- Clipboard -->
+    <string name="extracted_text_clipboard_label">Extracted Text</string>
+
+    <!-- Error Messages and Notifications -->
+    <string name="no_image_selected">No image selected</string>
+    <string name="text_recognition_failed">Text recognition failed: %s</string>
+    <string name="error_preparing_image">Error preparing image: %s</string>
 </resources>
