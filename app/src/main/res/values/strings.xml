@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">TextScan</string>
+
+    <!-- Home Screen -->
+    <string name="select_image">Select Image</string>
+    <string name="choose_image_subtitle">Choose an image to extract text</string>
+    <string name="recent_scans">Recent Scans</string>
+    <string name="view_all">View All</string>
+
+    <!-- Processing -->
+    <string name="processing_image">Processing image...</string>
+    <string name="please_wait">Please wait</string>
+
+    <!-- Results Screen -->
+    <string name="copy_text">Copy Text</string>
+    <string name="select_new_image">Select New Image</string>
+    <string name="no_text_detected">No text detected</string>
+    <string name="try_another_image">Try Another Image</string>
+    <string name="text_copied">Text copied to clipboard</string>
+
+    <!-- Navigation -->
+    <string name="back">Back</string>
+
+    <!-- Tabs -->
+    <string name="tab_image">Image</string>
+    <string name="tab_text">Text</string>
+</resources>

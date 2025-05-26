@@ -1,0 +1,43 @@
+# Build directories
+/build
+build/
+*/build/
+
+# Gradle files
+.gradle/
+gradle-wrapper.jar
+gradle-wrapper.properties
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Android specific
+*.apk
+*.aab
+*.ap_
+*.dex
+local.properties
+proguard/
+lint/
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+src/androidTest/java/com/mkas/ocrapp/ExampleInstrumentedTest.kt
+src/test/java/com/mkas/ocrapp/ExampleUnitTest.kt
